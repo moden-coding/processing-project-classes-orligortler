@@ -3,6 +3,7 @@ import processing.core.PApplet;
 
 public class App extends PApplet {
     ArrayList<Worm> worms;
+    ArrayList<Bullet> bullets;
     Gun gun;
 
     public static void main(String[] args) {
@@ -17,6 +18,9 @@ public class App extends PApplet {
         worms = new ArrayList<>(); // Initialize worms ArrayList
         wormMaker(); // Call wormMaker after initializing worms
         gun = new Gun(this);
+        bullets =  new ArrayList<>();
+        // bullet = new Bullet(420, 620, this);
+        // bullet.display();
     }
 
     public void draw() {
@@ -25,8 +29,11 @@ public class App extends PApplet {
             b.display();
             b.update();
         }
+        for (Bullet shoot : bullets){
+            shoot.update();
+            shoot.display();
+        }
         gun.display();
-        gun.update();
     }
 
     public void wormMaker() {
@@ -36,21 +43,29 @@ public class App extends PApplet {
         worms.add(worm);
     }
 
-    // public void gunMaker(){
-    // int x = 550;
-    // int y = 650;
-    // }
+    public void bulletMaker(){
+        int x = Gun.getX();
+        int y = Gun.getY();
+        Bullet bullet = new Bullet(x, y, this);
+        bullets.add(bullet);
+    }
+    
+
+    
 
     public void keyPressed() {
-        if (key == RIGHT) {
+        if (keyCode == RIGHT) {
             gun.moveRight();
         }
-        if (key == LEFT) {
+        if (keyCode == LEFT) {
             gun.moveLeft();
+        }
+        if (keyCode ==  ' ') {
+            bulletMaker();
         }
     }
     //made by chatGPT
-    public void keyReleased() {
-        gun.stop(); // Stop gun movement
-    }
+    // public void keyReleased() {
+    //     gun.stop(); // Stop gun movement
+    // }
 }

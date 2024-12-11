@@ -10,24 +10,26 @@ public class Gun {
         canvas = c;
     }
 
-    public void update() {
-        xGun += gunSpeed; // Move the gun horizontally
-    }
-
     public void display() {
         canvas.fill(120, 30, 200);
         canvas.rect(xGun, 650, 25, 50); // Gun dimensions and position
     }
 
     public void moveRight() {
-        gunSpeed = 10;
+        if (xGun < 1075) {
+            xGun += 10;
+        }
     }
 
     public void moveLeft() {
-        gunSpeed = -10;
+        if (xGun > 0) {
+            xGun -= 15;
+        }
     }
-
-    public void stop() {
-        gunSpeed = 0; // Stop gun movement
+    public int getX(){
+        return xGun;
+    }
+    public int getY(){
+        return 650;
     }
 }
