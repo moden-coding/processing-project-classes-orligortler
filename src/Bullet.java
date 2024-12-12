@@ -21,5 +21,11 @@ public class Bullet {
         canvas.fill(100, 90, 100);
         canvas.rect(xbullet, ybullet, 5, 15); // Gun dimensions and position
     }
-   
+
+    public int getX(){
+        return xbullet;
+    }
+    public int getY(){
+        return ybullet;
+    }
 }

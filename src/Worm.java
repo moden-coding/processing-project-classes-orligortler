@@ -37,4 +37,11 @@ public class Worm {
             yWorm += 50;   // Move down 100 pixels
         }
     }
+
+    public int getX(){
+        return xWorm;
+    }
+    public int getY(){
+        return yWorm;
+    }
 }

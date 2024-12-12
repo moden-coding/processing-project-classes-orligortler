@@ -18,7 +18,7 @@ public class App extends PApplet {
         worms = new ArrayList<>(); // Initialize worms ArrayList
         wormMaker(); // Call wormMaker after initializing worms
         gun = new Gun(this);
-        bullets =  new ArrayList<>();
+        bullets = new ArrayList<>();
         // bullet = new Bullet(420, 620, this);
         // bullet.display();
     }
@@ -29,11 +29,13 @@ public class App extends PApplet {
             b.display();
             b.update();
         }
-        for (Bullet shoot : bullets){
-            shoot.update();
-            shoot.display();
+        for (Bullet sshoot : bullets) {
+            sshoot.update();
+            sshoot.display();
         }
         gun.display();
+        removeBullets();
+        checkForHits();
     }
 
     public void wormMaker() {
@@ -43,15 +45,43 @@ public class App extends PApplet {
         worms.add(worm);
     }
 
-    public void bulletMaker(){
-        int x = Gun.getX();
-        int y = Gun.getY();
+    public void bulletMaker() {
+        int x = gun.getX();
+        int y = gun.getY();
         Bullet bullet = new Bullet(x, y, this);
         bullets.add(bullet);
     }
-    
 
-    
+    public void checkForHits() {
+        for (int i = 0; i < bullets.size(); i++) {
+            Bullet b = bullets.get(i);
+            for (int j = 0; j < worms.size(); j++) {
+                Worm w = worms.get(j);
+                if (contact(w, b)) {
+                    worms.remove(w);
+                    bullets.remove(b);
+                }
+
+            }
+        }
+    }
+
+    public boolean contact(Worm w, Bullet b){
+       float distance = this.dist(w.getX(), w.getY(), b.getX(), b.getY());
+        if (distance < 25) {
+            return true;
+        } 
+        return false;
+    }
+
+    public void removeBullets() {
+        for (int i = 0; i < bullets.size(); i++) {
+            Bullet b = bullets.get(i);
+            if (b.getY() < 0) {
+                bullets.remove(b);
+            }
+        }
+    }
 
     public void keyPressed() {
         if (keyCode == RIGHT) {
@@ -60,12 +90,8 @@ public class App extends PApplet {
         if (keyCode == LEFT) {
             gun.moveLeft();
         }
-        if (keyCode ==  ' ') {
+        if (keyCode == ' ') {
             bulletMaker();
         }
     }
-    //made by chatGPT
-    // public void keyReleased() {
-    //     gun.stop(); // Stop gun movement
-    // }
 }
