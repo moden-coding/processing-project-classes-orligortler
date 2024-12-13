@@ -14,7 +14,7 @@ public class Worm {
         size = 50;
         canvas = c;
         speed = 5;
-        color = canvas.color(0, 255, 0); 
+        color = canvas.color(0, 255, 0);
     }
 
     public void display() {
@@ -23,25 +23,34 @@ public class Worm {
     }
 
     public void update() {
-        hitAnything(); // Check for wall collisions
+       
+        if (xWorm + size / 2 > canvas.width || xWorm - size / 2 < 0) {
+            if (yWorm > 50 || xWorm - size / 2 > 0) {
+                hitWall();
+            }
+            
+        }
+        // Check for wall collisions
         xWorm += speed; // Move the worm horizontally
     }
 
-    public void hitAnything(){
+    public void hitAnything() {
         hitWall();
     }
 
     public void hitWall() {
-        if (xWorm + size / 2 > canvas.width || xWorm - size / 2 < 0) {
-            speed = -speed; // Reverse direction
-            yWorm += 50;   // Move down 100 pixels
-        }
+       
+           
+                speed = -speed; // Reverse direction
+                yWorm += 50; // Move down 100 pixels
+
     }
 
-    public int getX(){
+    public int getX() {
         return xWorm;
     }
-    public int getY(){
+
+    public int getY() {
         return yWorm;
     }
 }

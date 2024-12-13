@@ -17,7 +17,7 @@ public class Gun {
 
     public void moveRight() {
         if (xGun < 1075) {
-            xGun += 10;
+            xGun += 25;
         }
     }
 
@@ -32,4 +32,5 @@ public class Gun {
     public int getY(){
         return 650;
     }
+    
 }
