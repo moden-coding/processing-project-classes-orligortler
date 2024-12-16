@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import processing.core.PApplet;
 
+import processing.core.*;
+
 public class App extends PApplet {
     ArrayList<Worm> worms;
     ArrayList<Bullet> bullets;
@@ -10,6 +12,9 @@ public class App extends PApplet {
     int lives = 3;
     int bulletWaittime = 100;
     int lastShotTime = 0;
+    int highscore = 0;
+    int gameState = 0; // 0 = start screen, 1 = playing
+    int buttonX = 300, buttonY = 400, buttonW = 200, buttonH = 80; // Button dimensions
 
     public static void main(String[] args) {
         PApplet.main("App");
@@ -31,6 +36,16 @@ public class App extends PApplet {
     }
 
     public void draw() {
+        if (gameState == 0) {
+            birthScreen();
+        } else if (gameState == 1) {
+            playScreen();
+        } else if (gameState == 2) {
+            deathScreen();
+        }
+    }
+
+    public void playScreen() {
         background(0);
         for (Worm b : worms) {
             b.display();
@@ -45,6 +60,45 @@ public class App extends PApplet {
         for (Mushroom m : mushrooms) {
             m.display();
         }
+        drawHearts();
+        
+    }
+
+    public void birthScreen() {
+
+        background(255, 182, 193); // baby pink background
+        textAlign(CENTER);
+        fill(20);
+        textSize(30);
+        text("Shoot the worm before it reaches the bottom!", width / 2, 200);
+
+        buttonX = (width - buttonW) / 2;
+        buttonY = (height - buttonH) / 2;
+
+        // Border on start button
+        stroke(204, 0, 102);
+        strokeWeight(9);
+        rect(buttonX, buttonY, buttonW, buttonH);
+
+        // Draw the start button
+        noStroke();
+        fill(255, 105, 180);
+        rect(buttonX, buttonY, buttonW, buttonH);
+        fill(255);
+        textSize(42);
+        text("Start Game", buttonX + buttonW / 2, buttonY + buttonH / 2 + 10);
+    }
+
+    
+
+    public void deathScreen() {
+        println("You died ");
+        fill(255, 0, 0);
+        textSize(52);
+        text("You Died", width / 2, height / 2);
+        textSize(40);
+        text("press enter to restart", width / 2, height / 2 + 80);
+
     }
 
     public void checkforevrything() {
@@ -130,20 +184,15 @@ public class App extends PApplet {
     public void checkForDeath() {
         for (int i = 0; i < worms.size(); i++) {
             Worm w = worms.get(i);
-            if (contactDied(w, gun)) {
-                w.hitAnything();
-                // call lose lives or death screen here
+            if (w.getY() > 650) {
+                lives -= 1;
+                worms.remove(i);
+                if (lives == 0) {
+                    gameState = 2;
+                }
+
             }
-
         }
-    }
-
-    public boolean contactDied(Worm w, Gun gun) {
-        float distance = this.dist(w.getX(), w.getY(), gun.getX(), gun.getY());
-        if (distance < 50) {
-            return true;
-        }
-        return false;
     }
 
     public boolean contactWM(Worm w, Mushroom m) {
@@ -179,6 +228,25 @@ public class App extends PApplet {
         }
     }
 
+    public void drawHearts() {
+        int xHeartPlacmet = 900;
+        for (int i = 0; i < lives; i++) {
+            drawHeart(xHeartPlacmet, 20, 35);
+            xHeartPlacmet += 50;
+        }
+
+    }
+
+    public void drawHeart(float heartX, float heartY, float size) {
+        noStroke();
+        float radius = size / 2;
+        fill(255, 0, 0);
+        arc(heartX - radius / 2, heartY, radius, radius, PI, TWO_PI);
+        arc(heartX + radius / 2, heartY, radius, radius, PI, TWO_PI);
+        triangle(heartX - radius, heartY, heartX + radius, heartY, heartX, heartY + radius * 1.5f);
+
+    }
+
     public void keyPressed() {
         if (keyCode == RIGHT) {
             gun.moveRight();
@@ -186,13 +254,27 @@ public class App extends PApplet {
         if (keyCode == LEFT) {
             gun.moveLeft();
         }
+        if (keyCode == ENTER) {
+            gameState = 0;
+        }
         if (keyCode == ' ') {
             int currentTime = millis();
             if (currentTime - lastShotTime >= bulletWaittime) {
                 bulletMaker();
             }
-        lastShotTime = currentTime;
-    
+            lastShotTime = currentTime;
+
+        }
     }
-}
+
+    public void mousePressed() {
+        if (gameState == 0) {
+            // Check if the mouse is over the play button
+            if (mouseX > buttonX && mouseX < buttonX + buttonW && mouseY > buttonY && mouseY < buttonY + buttonH) {
+                gameState = 1;
+                
+            }
+        }
+
+    }
 }
