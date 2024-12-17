@@ -13,7 +13,7 @@ public class Worm {
         yWorm = yPos;
         size = 50;
         canvas = c;
-        speed = 15;
+        speed = 5;
         color = canvas.color(0, 255, 0);
     }
 

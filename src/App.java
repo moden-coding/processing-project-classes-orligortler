@@ -1,4 +1,7 @@
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Scanner;
+
 import processing.core.PApplet;
 
 import processing.core.*;
@@ -13,7 +16,7 @@ public class App extends PApplet {
     int bulletWaittime = 100;
     int lastShotTime = 0;
     int highscore = 0;
-    int gameState = 0; // 0 = start screen, 1 = playing
+    int gameState = 0; // 0 = start screen, 1 = playing, 2 = died
     int buttonX = 300, buttonY = 400, buttonW = 200, buttonH = 80; // Button dimensions
 
     public static void main(String[] args) {
@@ -25,6 +28,7 @@ public class App extends PApplet {
     }
 
     public void setup() {
+        // readHighscore();
         worms = new ArrayList<>(); // Initialize worms ArrayList
         wormMaker(); // Call wormMaker after initializing worms
         gun = new Gun(this);
@@ -61,25 +65,20 @@ public class App extends PApplet {
             m.display();
         }
         drawHearts();
-        
     }
 
     public void birthScreen() {
-
         background(255, 182, 193); // baby pink background
         textAlign(CENTER);
         fill(20);
         textSize(30);
         text("Shoot the worm before it reaches the bottom!", width / 2, 200);
-
         buttonX = (width - buttonW) / 2;
         buttonY = (height - buttonH) / 2;
-
         // Border on start button
         stroke(204, 0, 102);
         strokeWeight(9);
         rect(buttonX, buttonY, buttonW, buttonH);
-
         // Draw the start button
         noStroke();
         fill(255, 105, 180);
@@ -89,8 +88,6 @@ public class App extends PApplet {
         text("Start Game", buttonX + buttonW / 2, buttonY + buttonH / 2 + 10);
     }
 
-    
-
     public void deathScreen() {
         println("You died ");
         fill(255, 0, 0);
@@ -98,7 +95,6 @@ public class App extends PApplet {
         text("You Died", width / 2, height / 2);
         textSize(40);
         text("press enter to restart", width / 2, height / 2 + 80);
-
     }
 
     public void checkforevrything() {
@@ -107,15 +103,23 @@ public class App extends PApplet {
         checkForWBHits();
         checkForMBHits();
         checkForDeath();
+        checkForEmptyWorm();
     }
 
     public void wormMaker() {
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 10; i++) {
             int x = (50 - p);
             int y = (50);
             Worm worm = new Worm(x, y, this);
             worms.add(worm);
             p += 50;
+        }
+    }
+
+    public void checkForEmptyWorm() {
+        if (worms.size() == 0) {
+            wormMaker();
+            highscore += 5;
         }
     }
 
@@ -145,9 +149,8 @@ public class App extends PApplet {
                     mushrooms.add(mushroom);
                     worms.remove(w);
                     bullets.remove(b);
-
+                    highscore += 1;
                 }
-
             }
         }
     }
@@ -162,7 +165,6 @@ public class App extends PApplet {
                     bullets.remove(b);
 
                 }
-
             }
         }
     }
@@ -176,7 +178,6 @@ public class App extends PApplet {
                 if (contactWM(w, m)) {
                     w.hitAnything();
                 }
-
             }
         }
     }
@@ -184,13 +185,14 @@ public class App extends PApplet {
     public void checkForDeath() {
         for (int i = 0; i < worms.size(); i++) {
             Worm w = worms.get(i);
-            if (w.getY() > 650) {
+            if (w.getY() > 600) {
                 lives -= 1;
-                worms.remove(i);
+                worms.clear();
+                wormMaker();
                 if (lives == 0) {
                     gameState = 2;
                 }
-
+                return;
             }
         }
     }
@@ -234,9 +236,9 @@ public class App extends PApplet {
             drawHeart(xHeartPlacmet, 20, 35);
             xHeartPlacmet += 50;
         }
-
     }
 
+    // this was made by chatgpt im my last game for the shpae of the heart
     public void drawHeart(float heartX, float heartY, float size) {
         noStroke();
         float radius = size / 2;
@@ -244,7 +246,6 @@ public class App extends PApplet {
         arc(heartX - radius / 2, heartY, radius, radius, PI, TWO_PI);
         arc(heartX + radius / 2, heartY, radius, radius, PI, TWO_PI);
         triangle(heartX - radius, heartY, heartX + radius, heartY, heartX, heartY + radius * 1.5f);
-
     }
 
     public void keyPressed() {
@@ -256,13 +257,14 @@ public class App extends PApplet {
         }
         if (keyCode == ENTER) {
             gameState = 0;
+            lives = 3;
         }
         if (keyCode == ' ') {
             int currentTime = millis();
             if (currentTime - lastShotTime >= bulletWaittime) {
                 bulletMaker();
+                lastShotTime = currentTime;
             }
-            lastShotTime = currentTime;
 
         }
     }
@@ -272,9 +274,27 @@ public class App extends PApplet {
             // Check if the mouse is over the play button
             if (mouseX > buttonX && mouseX < buttonX + buttonW && mouseY > buttonY && mouseY < buttonY + buttonH) {
                 gameState = 1;
-                
+
             }
         }
 
     }
 }
+
+//     public void readHighscore() {
+//         try (Scanner scanner = new Scanner(Paths.get("highscore.txt"))) {
+
+//             // we read the file until all lines have been read
+//             while (scanner.hasNextLine()) {
+//                 // we read one line
+//                 int row = scanner.nextLine();
+//                 // we print the line that we read
+//             highscore = int.valueOf(row);
+//             }
+//         } catch (Exception e) {
+//             System.out.println("Error: " + e.getMessage());
+//         }
+
+//     }
+
+// }

@@ -1,7 +1,6 @@
 import processing.core.PApplet;
 
 public class Gun {
-    private int gunSpeed;
     private PApplet canvas;
     private int xGun;
 
@@ -17,13 +16,13 @@ public class Gun {
 
     public void moveRight() {
         if (xGun < 1075) {
-            xGun += 25;
+            xGun += 30;
         }
     }
 
     public void moveLeft() {
         if (xGun > 0) {
-            xGun -= 15;
+            xGun -= 30;
         }
     }
     public int getX(){
