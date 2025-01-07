@@ -107,7 +107,7 @@ public class App extends PApplet {
         textSize(42);
         text("Start Game", buttonX + buttonW / 2, buttonY + buttonH / 2 + 10);
         score = 0;
-        text("Highscore:  " + highscore, width / 2, 1800);
+        text("Highscore:  " + highscore, width / 2, 600);
     }
 
     // whats is shown after you die
