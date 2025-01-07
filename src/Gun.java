@@ -15,21 +15,21 @@ public class Gun {
     }
 
     public void moveRight() {
-        if (xGun < 1075) {
-            xGun += 30;
+        if (xGun < 1075) { //so it dosent go off the map
+            xGun += 15;
         }
     }
 
     public void moveLeft() {
-        if (xGun > 0) {
-            xGun -= 30;
+        if (xGun > 0) { // so it dosent go off the map
+            xGun -= 15;
         }
     }
     public int getX(){
-        return xGun;
+        return xGun; // give x cordanate for colison checks
     }
     public int getY(){
-        return 650;
+        return 650; // y never changes so return the same value
     }
     
 }
